@@ -34,7 +34,7 @@ model.fit(10, loss_fn, optimizer, train_ds, val_ds, callbacks=True)
 # Get predictions
 model.predict("শনিবার ২৭ আগস্ট রাতে পটুয়াখালী সদর থানার ভারপ্রাপ্ত কর্মকর্তা")
 # For In-depth Reports
-model.test_report(data.test_df.head(512))
+model.test_report(data.test_df.head(100))
 ```
 ## Model Details:
 We have tested two models architectures Gru Based Model and Transformer Based Model. Both Model architectures are trained on the same dataset for 10 epochs with callbacks. In this particular task Gru based model gives better performance. Gru based model gives slightly better accuracy than transformer based model.
