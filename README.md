@@ -14,18 +14,17 @@ pip install -r requirements.txt
 ``` 
 
 ``` python
+# Import the necessary libraries
+import torch
+from pos_ner import GruMultiTaskModel, Config, Data
+
 # First load the data e.g. csv or dataframe
 data = Data(dataframe or "csv file path")
 # Configure the hyperparameter as necessary
-config = Config(
-    vocab_size=Data.vocab_size, 
-    pos_size=Data.pos_size, 
-    ner_size=Data.ner_size, 
-    n_ctx=100)
-
+config = Config(vocab_size=Data.vocab_size, pos_size=Data.pos_size, ner_size=Data.ner_size, n_ctx=100)
 # Build the dataloader
 train_ds, val_ds = data.build_dataloader(256, config.n_ctx, 0.8)
-# Select the model architecture in this case Gru or Transformer Model
+# Select the model
 model = GruMultiTaskModel(config).to(device)
 # Define the loss function and optimizer
 loss_fn = nn.CrossEntropyLoss()
