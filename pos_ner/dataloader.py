@@ -29,8 +29,15 @@ class Data:
             dataframe = csv_path_or_df
         else:
             dataframe = pd.read_csv(csv_path_or_df).dropna()
+
         # Split dataframe into train and test
-        self.train_df, self.test_df = train_test_split(dataframe, test_size=test_size, shuffle=False)
+        if truncate:
+            train_df, test_df = train_test_split(dataframe, test_size=test_size)
+            train_df = train_df[:truncate * test_size]
+            test_df = test_df[:truncate * test_size]
+        else:
+            train_df, test_df = train_test_split(dataframe, test_size=test_size)
+
         # Get vocabs from the entire dataframe
         Data.vocabs = set(["<UNK>"] + dataframe["Word"].tolist())
         self.train_df.head()
