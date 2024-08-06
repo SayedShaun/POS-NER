@@ -9,8 +9,8 @@ The system can be used to analyze various languages and identify the part-of-spe
 ## Usage
 
 ```bash
-# Install the requirements
-pip install -r requirements.txt
+# Install the package
+pip install git+https://github.com/SayedShaun/POS-NER.git
 ``` 
 
 ``` python
