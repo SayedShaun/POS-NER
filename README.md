@@ -7,12 +7,11 @@ The system consists of a data loader, a model architecture, and a set of utility
 The system can be used to analyze various languages and identify the part-of-speech and named entity of words in the text.
 
 ## Usage
-
+Install the package first
 ```bash
-# Install the package
 pip install git+https://github.com/SayedShaun/POS-NER.git
 ``` 
-
+Here is the step by step guide to use the package
 ``` python
 # Import the necessary libraries
 import torch
