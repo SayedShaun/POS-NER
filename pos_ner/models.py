@@ -280,7 +280,7 @@ class TransformerMultitaskModel(nn.Module):
 
 
 if __name__ == "__main__":
-    data = Data(df)
+    data = Data("Data/processed_data.csv")
     train_ds, val_ds = data.build_dataloader(512, 100, 0.8)
     config = Config(vocab_size=data.vocab_size, pos_size=data.pos_size, ner_size=data.ner_size)
     model = GruMultiTaskModel(config).to(device)

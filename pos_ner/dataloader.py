@@ -23,7 +23,7 @@ class Data:
     ner_encoder = LabelEncoder()
     vocabs = 0
 
-    def __init__(self, csv_path_or_df:str, truncate:int=None, test_size:float=0.1)->None:
+    def __init__(self, csv_path_or_df:str, test_size:float=0.1)->None:
         # Load either CSV file or DataFrame
         if isinstance(csv_path_or_df, pd.DataFrame):
             dataframe = csv_path_or_df
@@ -125,7 +125,7 @@ class Data:
 
 
 if __name__ == "__main__":
-    data = Data(df)
+    data = Data("Data/processed_data.csv")
     tokens = Data.word2index('বেজায়')
     print(tokens)
     print(Data.index2word(tokens))
