@@ -41,7 +41,8 @@ We have tested two models architectures Gru Based Model and Transformer Based Mo
 ## Results
 We have tested Gru based model and Transformer based model with same dataset for 10 epochs with callbacks. Gru gives slightly better performance. Though Transformer model known for better performance with very large dataset.Here is the performance of Gru based model and Transformer based model's performance. for training details please checkout the Results directory.
 
-!["alt text"](Results/gru_performance.png) ![alt text](Results/transformer_performance.png)
+!["alt text"](Results/gru_performance.png) 
+![alt text](Results/transformer_performance.png)
 
 ## Recommendations:
 While i trained both model with very minimal hyperparameter tuning, you can do some hyperparameter tuning to improve performance. Even increasing dataset size can help in improving performance.
