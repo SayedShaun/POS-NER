@@ -13,7 +13,7 @@ def load_clean_process(data_path:str, test_size:float=0.2):
         'Word': words,
         'POS': pos_tag,
         'NER': ner_tag
-    }).dropna().drop_duplicates().reset_index(drop=True)
+    })
     df = df.apply(lambda x: x.str.strip() if x.dtype=="object" else x)
 
     # Remove Punctuation
@@ -21,6 +21,6 @@ def load_clean_process(data_path:str, test_size:float=0.2):
     df = df.apply(lambda x: x.str.strip(punctuation) if x.dtype=="object" else x)
     df = df.dropna().reset_index(drop=True)
     # Save DataFrame
-    df.to_csv("Data/train_test_df.csv", index=False)
+    df.to_csv("Data/processed_data.csv", index=False)
 
 load_clean_process("Data/data.tsv", test_size=0.2)
