@@ -54,8 +54,7 @@ A streamlit web app is available for you to train complex model without writting
 ```bash
 https://github.com/SayedShaun/POS-NER.git
 ```
-
-![alt text](image.png)
+![image](https://github.com/user-attachments/assets/bef99035-86dc-4c1a-857f-33e4116f2e0f)
 
 
 ## Docker Image
