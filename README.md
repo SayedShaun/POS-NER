@@ -48,4 +48,39 @@ We have tested Gru based model and Transformer based model with same dataset for
 While i trained both model with very minimal hyperparameter tuning, you can do some hyperparameter tuning to improve performance. Even increasing dataset size can help in improving performance.
 
 
+## Web Interface
+A streamlit web app is available for you to train complex model without writting single lines of code. To use web interface to train model please clone the repository and run `streamlit run app.py`
+
+```bash
+https://github.com/SayedShaun/POS-NER.git
+```
+
+![alt text](image.png)
+
+
+## Docker Image
+To build docker image with from this repository run, make sure you have docker installed on your system. Then run the following command
+```bash
+docker build -t <image_name> .
+```
+
+To publish the docker image to docker hub run, make sure you have docker installed on your system. Then run the following command
+```bash
+docker tag <image id> <username>/<image_name>
+docker push <username>/<image_name>
+```
+
+To pull the docker image from docker hub run, make sure you have docker installed on your system. Then run the following command
+```bash
+docker pull <username>/<image_name>
+```
+
+To run the docker image run, make sure you have docker installed on your system. Then run the following command
+```bash
+docker run -p 8501:8501 <username>/<image_name>
+```
+
+
+
+
 

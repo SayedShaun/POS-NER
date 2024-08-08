@@ -25,7 +25,7 @@ class Config:
     gru_hidden: int = 128
     gru_layers: int = 1
     bidirectional: bool = False
-    d_model = 64
+    d_model: int = 64
     n_heads: int = 4
     n_layers: int = 4
     n_ctx: int = 20
