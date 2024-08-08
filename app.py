@@ -1,5 +1,4 @@
 # This is the code to run train the model using streamlit interface
-import time
 import torch
 import streamlit as st
 from pos_ner.dataloader import Data
