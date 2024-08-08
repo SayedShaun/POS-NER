@@ -129,6 +129,7 @@ class GruMultiTaskModel(nn.Module):
             plt.plot(train_loss_arr, label='Train Loss')
             if val_data is not None:
                 plt.plot(val_loss_arr, label='Val Loss')
+            plt.title(f'Loss History | {self.name}')
             plt.xlabel('Epochs')
             plt.ylabel('Loss')
             plt.legend()
@@ -196,7 +197,8 @@ class TransformerMultitaskModel(nn.Module):
             verbose=False,
             plot=False,
             patience: int = 5,
-            callbacks: bool= False)->None:
+            callbacks: bool= False
+            )->None:
         """
         Args:
             epochs (int): The number of epochs to train the model
@@ -238,9 +240,11 @@ class TransformerMultitaskModel(nn.Module):
 
         if plot:
             # A boolean variable to decide whether to plot loss history
+            plt.figure(figsize=(7, 3))
             plt.plot(train_loss_arr, label='Train Loss')
             if val_data is not None:
                 plt.plot(val_loss_arr, label='Val Loss')
+            plt.title(f'Loss History | {self.name}')
             plt.xlabel('Epochs')
             plt.ylabel('Loss')
             plt.legend()
@@ -277,12 +281,10 @@ class TransformerMultitaskModel(nn.Module):
 
 if __name__ == "__main__":
     data = Data(df)
-    config = Config(vocab_size=data.vocab_size, pos_size=data.pos_size,
-                    ner_size=data.ner_size, n_ctx=100)
-    train_ds, val_ds = data.build_dataloader(256, config.n_ctx, 0.8)
-    model = TransformerMultitaskModel(config).to(device)
+    train_ds, val_ds = data.build_dataloader(512, 100, 0.8)
+    config = Config(vocab_size=data.vocab_size, pos_size=data.pos_size, ner_size=data.ner_size)
+    model = GruMultiTaskModel(config).to(device)
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
-    model.fit(10, loss_fn, optimizer, train_ds, val_ds, callbacks=True)
-    model.predict(data.test_df.head(10)["Word"].tolist())
-    model.test_report(data.test_df.head(512))
+    model.fit(10, loss_fn, optimizer, train_ds, val_ds, callbacks=True, plot=True)
+    model.test_report(data.test_df)

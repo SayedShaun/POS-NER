@@ -105,7 +105,7 @@ def classification_reports(model, test_df:pd.DataFrame, cm:bool=False)->None:
     metrics_df = pd.DataFrame(metrics, index=['POS', 'NER'])
     plt.figure(figsize=(7, 3))
     sns.heatmap(metrics_df, annot=True, fmt='.2f', cmap='Blues', cbar=False)
-    plt.title('Performance Metrics')
+    plt.title(f'Performance Metrics | {model.name}')
     plt.show()
 
     if cm:

@@ -1,3 +1,3 @@
 # Initialize the package
 from .dataloader import Data
-from .model import GruMultiTaskModel, Config, TransformerMultitaskModel
+from .models import GruMultiTaskModel, Config, TransformerMultitaskModel

@@ -29,15 +29,8 @@ class Data:
             dataframe = csv_path_or_df
         else:
             dataframe = pd.read_csv(csv_path_or_df).dropna()
-
         # Split dataframe into train and test
-        if truncate:
-            train_df, test_df = train_test_split(dataframe, test_size=test_size)
-            train_df = train_df[:truncate * test_size]
-            test_df = test_df[:truncate * test_size]
-        else:
-            train_df, test_df = train_test_split(dataframe, test_size=test_size)
-
+        self.train_df, self.test_df = train_test_split(dataframe, test_size=test_size, shuffle=False)
         # Get vocabs from the entire dataframe
         Data.vocabs = set(["<UNK>"] + dataframe["Word"].tolist())
         self.train_df.head()
@@ -131,13 +124,9 @@ class Data:
         return train_loader, val_loader
 
 
-
 if __name__ == "__main__":
-    data = Data("Data/train_test_df.csv", truncate=1000)
-    tokens = Data.word2index("পটুয়াখালী আগস্ট রাতে")
+    data = Data(df)
+    tokens = Data.word2index('বেজায়')
     print(tokens)
-    print(data.index2word(tokens))
-    print("Training Data Shape: ", data.train_df.shape)
-    print("Testing Data Shape: ", data.test_df.shape)
-    data.plot_labels("POS")
-    print(Data.vocab_size)
+    print(Data.index2word(tokens))
+    train_ds, val_ds = data.build_dataloader(32, 20, 0.8)
