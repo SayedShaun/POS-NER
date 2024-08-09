@@ -26,7 +26,7 @@ train_ds, val_ds = data.build_dataloader(256, config.n_ctx, 0.8)
 # Select the model
 model = GruMultiTaskModel(config).to(device)
 # Define the loss function and optimizer
-loss_fn = nn.CrossEntropyLoss()
+loss_fn = torch.nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 # Train the model with necessary parameters
 model.fit(10, loss_fn, optimizer, train_ds, val_ds, callbacks=True)
@@ -45,11 +45,11 @@ We have tested Gru based model and Transformer based model with same dataset for
 ![alt text](Results/transformer_performance.png)
 
 ## Recommendations:
-While i trained both model with very minimal hyperparameter tuning, you can do some hyperparameter tuning to improve performance. Even increasing dataset size can help in improving performance.
+While training both models with minimal hyperparameter tuning, consider exploring opportunities for further tuning to potentially enhance performance. Additionally, incorporating a larger dataset can contribute positively to the model's performance. Also a warning to use GPU for training on large datasets.
 
 
 ## Web Interface
-A streamlit web app is available for you to train complex model without writting single lines of code. To use web interface to train model please clone the repository and run `streamlit run app.py`
+A streamlit web app is available for you to train complex model without witting single lines of code. To use web interface to train model please clone the repository and run `streamlit run app.py`
 
 ```bash
 https://github.com/SayedShaun/POS-NER.git
@@ -65,7 +65,7 @@ docker build -t <image_name> .
 
 To publish the docker image to docker hub run, make sure you have docker installed on your system. Then run the following command
 ```bash
-docker tag <image id> <username>/<image_name>
+docker tag <image_id> <username>/<image_name>
 docker push <username>/<image_name>
 ```
 
