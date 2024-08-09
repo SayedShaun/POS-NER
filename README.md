@@ -57,7 +57,7 @@ https://github.com/SayedShaun/POS-NER.git
 ![image](https://github.com/user-attachments/assets/bef99035-86dc-4c1a-857f-33e4116f2e0f)
 
 
-## Docker Image
+## Docker Use ( Streamlit App)
 To build docker image with from this repository run, make sure you have docker installed on your system. Then run the following command
 ```bash
 docker build -t <image_name> .
