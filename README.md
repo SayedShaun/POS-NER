@@ -79,6 +79,9 @@ To run the docker image run, make sure you have docker installed on your system.
 docker run -p 8501:8501 <username>/<image_name>
 ```
 
+## Contributors
+If you have any suggestion or problem, please feel free to open an issue on [Github](https://github.com/SayedShaun/POS-NER/issues). Thank you.
+
 
 
 
