@@ -1,17 +1,18 @@
-import pandas as pd
+
 import torch
+import warnings
+import pandas as pd
 from torch import Tensor
-from typing import List, Tuple, Optional
-from dataclasses import dataclass
 import matplotlib.pyplot as plt
-plt.style.use("ggplot")
 from dataclasses import dataclass
+from typing import List, Tuple, Optional
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from torch.utils.data import TensorDataset, DataLoader, random_split
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-import warnings
+
+plt.style.use("ggplot")
 warnings.filterwarnings("ignore")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 @dataclass
@@ -23,14 +24,15 @@ class Data:
     ner_encoder = LabelEncoder()
     vocabs = 0
 
-    def __init__(self, csv_path_or_df:str, test_size:float=0.1)->None:
+    def __init__(self, csv_path_or_df: str, test_size: float = 0.1) -> None:
         # Load either CSV file or DataFrame
         if isinstance(csv_path_or_df, pd.DataFrame):
             dataframe = csv_path_or_df
         else:
             dataframe = pd.read_csv(csv_path_or_df).dropna()
         # Split dataframe into train and test
-        self.train_df, self.test_df = train_test_split(dataframe, test_size=test_size, shuffle=False)
+        self.train_df, self.test_df = train_test_split(
+            dataframe, test_size=test_size, shuffle=False)
         # Get vocabs from the entire dataframe
         Data.vocabs = set(["<UNK>"] + dataframe["Word"].tolist())
         self.train_df.head()
@@ -40,20 +42,20 @@ class Data:
         Data.ner_size = len(self.train_df.iloc[:, 2].unique())
 
     @classmethod
-    def index2word(cls, indices:Optional[int])->str:
+    def index2word(cls, indices: Optional[int]) -> str:
         i2w = {i+1: w for i, w in enumerate(cls.vocabs)}
         return " ".join([i2w[i] for i in indices])
 
     @classmethod
-    def word2index(cls, words:str)->List[int]:
-        w2i = {w:i+1 for i, w in enumerate(cls.vocabs)}
+    def word2index(cls, words: str) -> List[int]:
+        w2i = {w: i+1 for i, w in enumerate(cls.vocabs)}
         if isinstance(words, str):
             # If the input is a string, split it into words
             return [w2i.get(word, w2i["<UNK>"]) for word in words.split()]
         # If the input is a list of words
         return [w2i.get(word, w2i["<UNK>"]) for word in words]
 
-    def build_sequence(self, df:pd.DataFrame, seq_len:int, col:str)->Tensor:
+    def build_sequence(self, df: pd.DataFrame, seq_len: int, col: str) -> Tensor:
         """
         This block of code is responsible for building
         sequences from a dataframe based on a specified column.
@@ -86,16 +88,19 @@ class Data:
                 sequences.append(sequence)
         return torch.tensor(sequences)
 
-
-    def plot_labels(self, row:str)->None:
+    def plot_labels(self, row: str) -> None:
         self.train_df[row].value_counts().plot(kind="bar")
         plt.title(f"Label Distribution for {row}")
         plt.xlabel(row)
         plt.ylabel("Count")
         plt.show()
 
-    def build_dataloader(self, batch_size:int, seq_length:int, train_size:float=0.8
-        )->Tuple[DataLoader, DataLoader]:
+    def build_dataloader(
+            self, 
+            batch_size: 
+            int, seq_length: int, 
+            train_size: float = 0.8
+            ) -> Tuple[DataLoader, DataLoader]:
         """
         This block of code is responsible for building train and val dataloaders.
 

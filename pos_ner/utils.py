@@ -1,12 +1,12 @@
 from matplotlib import pyplot as plt
 import pandas as pd
 from sklearn.metrics import (
-    confusion_matrix, 
-    f1_score, 
-    precision_score, 
+    confusion_matrix,
+    f1_score,
+    precision_score,
     recall_score,
     accuracy_score
-    )
+)
 import torch
 import seaborn as sns
 from pos_ner.dataloader import Data
@@ -14,7 +14,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-def train_epoch(model, loss_fn, optimizer, train_data, device)->float:
+def train_epoch(model, loss_fn, optimizer, train_data, device) -> float:
     """
     Args:
         model: The model to be used for training.
@@ -31,7 +31,7 @@ def train_epoch(model, loss_fn, optimizer, train_data, device)->float:
         optimizer.zero_grad()
         inputs = inputs.to(device)
         # Fetch two targets
-        pos_y, ner_y = targets[:,0,:].to(device), targets[:,1,:].to(device)
+        pos_y, ner_y = targets[:, 0, :].to(device), targets[:, 1, :].to(device)
         pos_logits, ner_logits = model(inputs)
         pos_loss = loss_fn(pos_logits.flatten(0, 1), pos_y.reshape(-1))
         ner_loss = loss_fn(ner_logits.flatten(0, 1), ner_y.reshape(-1))
@@ -42,7 +42,8 @@ def train_epoch(model, loss_fn, optimizer, train_data, device)->float:
         avg_train_loss += loss.item()
     return avg_train_loss / len(train_data)
 
-def validate_epoch(model, loss_fn, val_data, device)->float:
+
+def validate_epoch(model, loss_fn, val_data, device) -> float:
     """
     Args:
         model: The model to be used for validation.
@@ -58,17 +59,20 @@ def validate_epoch(model, loss_fn, val_data, device)->float:
         for val_inputs, val_targets in val_data:
             val_inputs = val_inputs.to(device)
             # Fetch two targets
-            val_pos_y, val_ner_y = val_targets[:,0,:].to(device), val_targets[:,1,:].to(device)
+            val_pos_y, val_ner_y = val_targets[:, 0, :].to(
+                device), val_targets[:, 1, :].to(device)
             val_pos_logits, val_ner_logits = model(val_inputs)
-            val_pos_loss = loss_fn(val_pos_logits.flatten(0, 1), val_pos_y.reshape(-1))
-            val_ner_loss = loss_fn(val_ner_logits.flatten(0, 1), val_ner_y.reshape(-1))
+            val_pos_loss = loss_fn(
+                val_pos_logits.flatten(0, 1), val_pos_y.reshape(-1))
+            val_ner_loss = loss_fn(
+                val_ner_logits.flatten(0, 1), val_ner_y.reshape(-1))
             # Combine losses
             val_loss = val_pos_loss + val_ner_loss
             avg_val_loss += val_loss.item()
     return avg_val_loss / len(val_data)
 
 
-def classification_reports(model, test_df:pd.DataFrame, cm:bool=False)->None:
+def classification_reports(model, test_df: pd.DataFrame, cm: bool = False) -> None:
     """
     Args:
         test_df: Test dataframe
@@ -87,20 +91,20 @@ def classification_reports(model, test_df:pd.DataFrame, cm:bool=False)->None:
         'Accuracy': [
             accuracy_score(pos_true, pos_pred),
             accuracy_score(ner_true, ner_pred)
-            ],
+        ],
         'Precision': [
             precision_score(pos_true, pos_pred, average='macro'),
             precision_score(ner_true, ner_pred, average='macro')
-            ],
+        ],
         'Recall': [
             recall_score(pos_true, pos_pred, average='macro'),
             recall_score(ner_true, ner_pred, average='macro')
-            ],
+        ],
         'F1 Score': [
             f1_score(pos_true, pos_pred, average='macro'),
             f1_score(ner_true, ner_pred, average='macro')
-            ]
-        }
+        ]
+    }
     # Create a dataframe from the metrics dictionary
     metrics_df = pd.DataFrame(metrics, index=['POS', 'NER'])
     plt.figure(figsize=(7, 3))
@@ -111,7 +115,8 @@ def classification_reports(model, test_df:pd.DataFrame, cm:bool=False)->None:
     if cm:
         fig, ax = plt.subplots(1, 2, figsize=(8, 4))
         pos_cm = confusion_matrix(pos_true, pos_pred)
-        sns.heatmap(pos_cm, annot=True, fmt='d', cmap='Blues', ax=ax[0], cbar=False)
+        sns.heatmap(pos_cm, annot=True, fmt='d',
+                    cmap='Blues', ax=ax[0], cbar=False)
         ax[0].set_title('POS Confusion Matrix')
         ax[0].set_xlabel('Predicted')
         ax[0].set_ylabel('True')
@@ -123,4 +128,3 @@ def classification_reports(model, test_df:pd.DataFrame, cm:bool=False)->None:
         ax[1].set_ylabel('True')
         plt.tight_layout()
         plt.show()
-

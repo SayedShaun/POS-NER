@@ -1,19 +1,19 @@
+import warnings
+from typing import List, Tuple, Optional
 from dataclasses import dataclass
 import torch
 import pandas as pd
 from tqdm import tqdm
 from pos_ner.utils import (
-    classification_reports, 
-    train_epoch, 
+    classification_reports,
+    train_epoch,
     validate_epoch
-    )
+)
 from pos_ner.dataloader import Data
 from torch import nn, Tensor
 import matplotlib.pyplot as plt
 plt.style.use("ggplot")
-from typing import List, Tuple, Optional
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-import warnings
 warnings.filterwarnings("ignore")
 
 
@@ -32,16 +32,16 @@ class Config:
     d_ff: int = 128
     head_dim: int = d_model//n_heads
     dropout_p: float = 0.5
-    
+
 
 class GruMultiTaskModel(nn.Module):
-    def __init__(self, config: Config)->None:
+    def __init__(self, config: Config) -> None:
         super(GruMultiTaskModel, self).__init__()
         self.embedding = nn.Embedding(config.vocab_size, config.gru_hidden)
         self.gru = nn.GRU(config.gru_hidden, config.gru_hidden,
-            batch_first=True, num_layers=config.gru_layers,
-            bidirectional=config.bidirectional
-            )
+                          batch_first=True, num_layers=config.gru_layers,
+                          bidirectional=config.bidirectional
+                          )
         if config.bidirectional:
             self.pos_output = nn.Linear(config.gru_hidden*2, config.pos_size)
             self.ner_output = nn.Linear(config.gru_hidden*2, config.ner_size)
@@ -51,7 +51,7 @@ class GruMultiTaskModel(nn.Module):
         self.dropout = nn.Dropout(config.dropout_p)
         self.name = "GruMultiTaskModel"
 
-    def forward(self, X: Tensor)->Tuple[Tensor, Tensor]:
+    def forward(self, X: Tensor) -> Tuple[Tensor, Tensor]:
         """
         Args:
             X: A tensor of shape (batch_size, seq_length)
@@ -83,7 +83,7 @@ class GruMultiTaskModel(nn.Module):
             verbose=False,
             plot=False,
             patience: int = 5,
-            callbacks: bool= False)->None:
+            callbacks: bool = False) -> None:
         """
         Args:
             epochs (int): The number of epochs to train the model
@@ -101,7 +101,8 @@ class GruMultiTaskModel(nn.Module):
         patiences = 0
         best_val_loss = float('inf')
         for epoch in tqdm(range(epochs)):
-            train_loss = train_epoch(self, loss_fn, optimizer, train_data, device)
+            train_loss = train_epoch(
+                self, loss_fn, optimizer, train_data, device)
             val_loss = validate_epoch(self, loss_fn, val_data, device)
             if callbacks:
                 if val_loss < best_val_loss:
@@ -117,7 +118,8 @@ class GruMultiTaskModel(nn.Module):
             # Show training and validation loss history
             if verbose:
                 if verbose and val_data is not None:
-                    print(f"Train Loss: {train_loss:.3f}, Val Loss: {val_loss:.3f}")
+                    print(
+                        f"Train Loss: {train_loss:.3f}, Val Loss: {val_loss:.3f}")
                 else:
                     print(f"Train Loss: {train_loss:.3f}")
             train_loss_arr.append(train_loss)
@@ -135,7 +137,7 @@ class GruMultiTaskModel(nn.Module):
             plt.legend()
             plt.show()
 
-    def predict(self, input_text:Optional[List[str]])->Tuple[List[int], List[int]]:
+    def predict(self, input_text: Optional[List[str]]) -> Tuple[List[int], List[int]]:
         """
         Args:
             input_text: A list of strings or a single string
@@ -153,7 +155,7 @@ class GruMultiTaskModel(nn.Module):
             ner_pred = torch.argmax(ner_probs, dim=-1)
         return pos_pred.cpu().numpy().squeeze(), ner_pred.cpu().numpy().squeeze()
 
-    def test_report(self, test_df:pd.DataFrame, cm:bool=False)->None:
+    def test_report(self, test_df: pd.DataFrame, cm: bool = False) -> None:
         """
         Args:
             test_df: Test dataframe
@@ -172,13 +174,13 @@ class TransformerMultitaskModel(nn.Module):
         block = nn.TransformerEncoderLayer(
             config.d_model, config.n_heads, config.d_ff,
             batch_first=True, dropout=config.dropout_p
-            )
+        )
         self.encoder = nn.TransformerEncoder(block, config.n_layers)
         self.pos_layer = nn.Linear(config.d_model, config.pos_size)
         self.ner_layer = nn.Linear(config.d_model, config.ner_size)
         self.name = "TransformerMultitaskModel"
 
-    def forward(self, X:Tensor)->Tuple[Tensor, Tensor]:
+    def forward(self, X: Tensor) -> Tuple[Tensor, Tensor]:
         w_embed = self.word_embed(X)
         position = torch.arange(0, X.shape[1]).unsqueeze(0).to(device)
         p_embed = self.position_embed(position)
@@ -197,8 +199,8 @@ class TransformerMultitaskModel(nn.Module):
             verbose=False,
             plot=False,
             patience: int = 5,
-            callbacks: bool= False
-            )->None:
+            callbacks: bool = False
+            ) -> None:
         """
         Args:
             epochs (int): The number of epochs to train the model
@@ -216,7 +218,8 @@ class TransformerMultitaskModel(nn.Module):
         patiences = 0
         best_val_loss = float('inf')
         for epoch in tqdm(range(epochs)):
-            train_loss = train_epoch(self, loss_fn, optimizer, train_data, device)
+            train_loss = train_epoch(
+                self, loss_fn, optimizer, train_data, device)
             val_loss = validate_epoch(self, loss_fn, val_data, device)
             if callbacks:
                 if val_loss < best_val_loss:
@@ -232,7 +235,8 @@ class TransformerMultitaskModel(nn.Module):
             # Show training and validation loss history
             if verbose:
                 if verbose and val_data is not None:
-                    print(f"Train Loss: {train_loss:.3f}, Val Loss: {val_loss:.3f}")
+                    print(
+                        f"Train Loss: {train_loss:.3f}, Val Loss: {val_loss:.3f}")
                 else:
                     print(f"Train Loss: {train_loss:.3f}")
             train_loss_arr.append(train_loss)
@@ -250,7 +254,7 @@ class TransformerMultitaskModel(nn.Module):
             plt.legend()
             plt.show()
 
-    def predict(self, input_text:Optional[List[str]])->Tuple[List[int], List[int]]:
+    def predict(self, input_text: Optional[List[str]]) -> Tuple[List[int], List[int]]:
         """
         Args:
             input_text: A list of strings or a single string
@@ -268,7 +272,7 @@ class TransformerMultitaskModel(nn.Module):
             ner_pred = torch.argmax(ner_probs, dim=-1)
         return pos_pred.cpu().numpy().squeeze(0), ner_pred.cpu().numpy().squeeze(0)
 
-    def test_report(self, test_df:pd.DataFrame, cm:bool=False)->None:
+    def test_report(self, test_df: pd.DataFrame, cm: bool = False) -> None:
         """
         Args:
             test_df: Test dataframe
@@ -282,9 +286,11 @@ class TransformerMultitaskModel(nn.Module):
 if __name__ == "__main__":
     data = Data("Data/processed_data.csv")
     train_ds, val_ds = data.build_dataloader(512, 100, 0.8)
-    config = Config(vocab_size=data.vocab_size, pos_size=data.pos_size, ner_size=data.ner_size)
+    config = Config(vocab_size=data.vocab_size,
+                    pos_size=data.pos_size, ner_size=data.ner_size)
     model = GruMultiTaskModel(config).to(device)
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
-    model.fit(10, loss_fn, optimizer, train_ds, val_ds, callbacks=True, plot=True)
+    model.fit(10, loss_fn, optimizer, train_ds,
+              val_ds, callbacks=True, plot=True)
     model.test_report(data.test_df)
