@@ -4,7 +4,7 @@ This project is a part-of-speech and named entity recognition system. It is buil
 
 The system consists of a data loader, a model architecture, and a set of utility functions. The data loader loads the data from a CSV file into a dataframe and prepares it for training. The model architecture is a multi-task model that predicts POS and NER simultaneously. The utility functions are used to calculate metrics such as accuracy, precision, recall, and F1-score.
 
-The system can be used to analyze various languages and identify the part-of-speech and named entity of words in the text.
+The system can be trained and used to analyze various languages and identify the part-of-speech and named entity of words in the text.
 
 ## Usage
 Install the package first
