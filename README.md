@@ -1,4 +1,4 @@
-# Part-Of-Speech and Named Entity Recognition System
+# Part-Of-Speech and Name Entity Recognition System
 
 This project is a part-of-speech and named entity recognition system. It is built using PyTorch and trained on a dataset of Bengali text. The system can identify the part-of-speech (POS) and named entity (NER) of words in the text.
 
