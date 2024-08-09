@@ -21,7 +21,7 @@ from pos_ner import GruMultiTaskModel, Config, Data
 data = Data(dataframe or "csv file path")
 # Configure the hyperparameter as necessary
 config = Config(vocab_size=Data.vocab_size, pos_size=Data.pos_size, ner_size=Data.ner_size, n_ctx=100)
-# Build the dataloader
+# Build the dataloader (Batch Size, Seq Length, Train Size)
 train_ds, val_ds = data.build_dataloader(256, config.n_ctx, 0.8)
 # Select the model
 model = GruMultiTaskModel(config).to(device)
