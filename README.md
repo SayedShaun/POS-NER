@@ -9,7 +9,7 @@ The system can be trained and used to analyze various languages and identify the
 ## Usage
 Install the package first
 ```bash
-pip install git+https://github.com/SayedShaun/POS-NER.git
+pip install git+https://github.com/SayedShaun/pos-ner-pipeline.git
 ``` 
 Here is the step by step guide to use the package
 ``` python
